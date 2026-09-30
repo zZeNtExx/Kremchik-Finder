@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kremchik Finder — поиск продавца с нужными ароматами на kremchik.ua</title>
+<meta name="description" content="Бесплатная программа для Windows: находит на kremchik.ua одного продавца, у которого есть все нужные ароматы, чтобы платить за одну доставку.">
+<meta property="og:title" content="Kremchik Finder">
+<meta property="og:description" content="Один продавец, все ваши ароматы, одна доставка.">
+<meta property="og:type" content="website">
+<style>
+:root{
+  --bg:#f1edf5; --ink:#2a1733; --muted:#6b5a75; --line:#d8cfe0; --panel:#fbf9fd;
+  --accent:#0f7a6b; --on-accent:#fff; --amber:#d98a1f;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1c1424; --ink:#efe8f4; --muted:#b3a4be; --line:#3d2f49; --panel:#251b30;
+    --accent:#3cc4ad; --on-accent:#10241f; --amber:#f0b04a;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.brand{font:700 1.1rem var(--serif);letter-spacing:.01em}
+.lang{font:600 .9rem var(--sans);background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer}
+.lang:hover{background:var(--ink);color:var(--bg)}
+
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding:40px 0 64px}
+h1{font:700 clamp(2rem,4.6vw,3.3rem)/1.1 var(--serif);margin:0 0 20px;letter-spacing:-.01em}
+.lead{font-size:1.1rem;color:var(--muted);margin:0 0 28px;max-width:34em}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-block;text-decoration:none;font-weight:600;padding:13px 24px;border-radius:10px}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.ghost{border:1.5px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--ink)}
+.note{margin:14px 0 0;font-size:.92rem;color:var(--muted)}
+
+.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);box-shadow:0 18px 40px -22px rgba(42,23,51,.5)}
+.shot img{display:block;width:100%;height:auto}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+.compare>div{padding:28px 0}
+.compare>div+div{padding-left:32px;border-left:1.5px solid var(--ink)}
+.compare h2{font:600 .95rem var(--sans);color:var(--muted);margin:0 0 14px}
+.parcels{display:flex;gap:10px;margin-bottom:12px}
+.box{width:38px;height:30px;border-radius:4px;background:var(--amber);position:relative}
+.box::after{content:"";position:absolute;left:0;right:0;top:12px;height:5px;background:rgba(42,23,51,.35)}
+.after .box{background:var(--accent)}
+.compare p{margin:0;font:600 1.15rem var(--serif)}
+
+section{padding:64px 0 0}
+h2.title{font:700 clamp(1.5rem,3vw,2rem)/1.2 var(--serif);margin:0 0 28px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s}
+.steps li::before{content:counter(s);display:block;font:700 2.6rem/1 var(--serif);color:var(--accent);margin-bottom:10px}
+.steps h3,.feat h3{font:700 1.05rem var(--sans);margin:0 0 6px}
+.steps p,.feat p{margin:0;color:var(--muted)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.feat div{padding:20px 0;border-top:1px solid var(--line)}
+
+details{border-top:1px solid var(--line);padding:16px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600}
+details p{margin:10px 0 0;color:var(--muted);max-width:44em}
+pre{margin:10px 0 0;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow-x:auto;font:.9rem/1.5 ui-monospace,Consolas,monospace}
+
+.cta{margin-top:64px;padding:40px;background:var(--ink);color:var(--bg);border-radius:14px;display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.cta h2{font:700 1.6rem/1.2 var(--serif);margin:0}
+.cta .btn.primary{background:var(--bg);color:var(--ink)}
+footer{padding:40px 0 56px;color:var(--muted);font-size:.92rem}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:32px;padding-top:16px}
+  .steps,.feat{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+  .compare>div+div{padding-left:0;border-left:0;border-top:1.5px solid var(--ink)}
+  .cta{padding:28px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">Kremchik Finder</span>
+    <button class="lang" id="lang" type="button" aria-label="Language / Мова"></button>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1 data-i="h1"></h1>
+        <p class="lead" data-i="lead"></p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/zZeNtExx/Kremchik-Finder-/releases/latest/download/KremchikFinder.exe" data-i="dl"></a>
+          <a class="btn ghost" href="https://github.com/zZeNtExx/Kremchik-Finder-" data-i="src"></a>
+        </div>
+        <p class="note" data-i="note"></p>
+      </div>
+      <div class="shot"><img src="screenshot.png" alt="" data-alt="alt" onerror="this.closest('.shot').hidden=true"></div>
+    </div>
+
+    <div class="compare">
+      <div>
+        <h2 data-i="c1h"></h2>
+        <div class="parcels"><span class="box"></span><span class="box"></span><span class="box"></span></div>
+        <p data-i="c1"></p>
+      </div>
+      <div class="after">
+        <h2 data-i="c2h"></h2>
+        <div class="parcels"><span class="box"></span></div>
+        <p data-i="c2"></p>
+      </div>
+    </div>
+
+    <section>
+      <h2 class="title" data-i="howh"></h2>
+      <ol class="steps">
+        <li><h3 data-i="s1h"></h3><p data-i="s1"></p></li>
+        <li><h3 data-i="s2h"></h3><p data-i="s2"></p></li>
+        <li><h3 data-i="s3h"></h3><p data-i="s3"></p></li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="feat">
+        <div><h3 data-i="f1h"></h3><p data-i="f1"></p></div>
+        <div><h3 data-i="f2h"></h3><p data-i="f2"></p></div>
+        <div><h3 data-i="f3h"></h3><p data-i="f3"></p></div>
+        <div><h3 data-i="f4h"></h3><p data-i="f4"></p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="title" data-i="faqh"></h2>
+      <details><summary data-i="q1"></summary><p data-i="a1"></p></details>
+      <details><summary data-i="q2"></summary><p data-i="a2"></p></details>
+      <details>
+        <summary data-i="q3"></summary>
+        <p data-i="a3"></p>
+        <pre>pip install -r requirements.txt
+python kremchik_finder.py</pre>
+      </details>
+    </section>
+
+    <div class="cta">
+      <h2 data-i="ctah"></h2>
+      <a class="btn primary" href="https://github.com/zZeNtExx/Kremchik-Finder-/releases/latest/download/KremchikFinder.exe" data-i="dl"></a>
+    </div>
+  </main>
+
+  <footer>
+    <span data-i="foot"></span>
+    <a href="https://github.com/zZeNtExx/Kremchik-Finder-/blob/main/LICENSE">MIT</a>
+  </footer>
+</div>
+
+<script>
+const T = {
+  ru: {
+    title: "Kremchik Finder — поиск продавца с нужными ароматами на kremchik.ua",
+    desc: "Бесплатная программа для Windows: находит на kremchik.ua одного продавца, у которого есть все нужные ароматы, чтобы платить за одну доставку.",
+    btn: "Українська",
+    h1: "Один продавец, все ваши ароматы, одна доставка",
+    lead: "Вставьте ссылки на ароматы с Кремчика. Программа найдёт продавца, у которого есть все сразу, чтобы вы платили за доставку один раз.",
+    dl: "Скачать для Windows", src: "Исходный код на GitHub",
+    note: "Бесплатно, без установки, Python не нужен.",
+    alt: "Окно программы Kremchik Finder с результатами поиска",
+    c1h: "Без программы", c1: "3 аромата, 3 продавца, 3 доставки",
+    c2h: "С программой", c2: "3 аромата, 1 продавец, 1 доставка",
+    howh: "Как это работает",
+    s1h: "Вставьте ссылки", s1: "Скопируйте адрес страницы каждого аромата на kremchik.ua или просто его ID.",
+    s2h: "Нажмите «Найти продавца»", s2: "Программа откроет страницы ароматов и сгруппирует предложения по продавцам.",
+    s3h: "Выберите продавца", s3: "Сверху список тех, у кого есть все ароматы. Если таких нет, показаны лучшие частичные варианты.",
+    f1h: "Учитывает объём", f1: "Задайте минимум мл на каждый аромат, лишние предложения отсеются.",
+    f2h: "Цены и тип предложения", f2: "Распив или остаток во флаконе, цена за единицу и доступный объём.",
+    f3h: "Русский и украинский", f3: "Язык интерфейса переключается одной кнопкой.",
+    f4h: "Бережно к сайту", f4: "Пауза 1,5 секунды между запросами. Ничего не отправляется на сторонние серверы.",
+    faqh: "Частые вопросы",
+    q1: "Windows пишет о неизвестном издателе", a1: "Это обычное дело для программ, собранных PyInstaller: у файла нет платной подписи. Исходный код открыт, exe собирает GitHub Actions, вы можете собрать его и сами.",
+    q2: "Это официальный инструмент?", a2: "Нет. Это независимый личный проект, он не связан с kremchik.ua.",
+    q3: "Как запустить без exe?", a3: "Установите Python и выполните в папке проекта:",
+    ctah: "Хватит платить за три доставки",
+    foot: "Неофициальный проект, не связан с kremchik.ua. Лицензия"
+  },
+  uk: {
+    title: "Kremchik Finder — пошук продавця з потрібними ароматами на kremchik.ua",
+    desc: "Безкоштовна програма для Windows: знаходить на kremchik.ua одного продавця, у якого є всі потрібні аромати, щоб платити за одну доставку.",
+    btn: "Русский",
+    h1: "Один продавець, усі ваші аромати, одна доставка",
+    lead: "Вставте посилання на аромати з Кремчика. Програма знайде продавця, у якого є всі одразу, щоб ви платили за доставку один раз.",
+    dl: "Завантажити для Windows", src: "Вихідний код на GitHub",
+    note: "Безкоштовно, без встановлення, Python не потрібен.",
+    alt: "Вікно програми Kremchik Finder з результатами пошуку",
+    c1h: "Без програми", c1: "3 аромати, 3 продавці, 3 доставки",
+    c2h: "З програмою", c2: "3 аромати, 1 продавець, 1 доставка",
+    howh: "Як це працює",
+    s1h: "Вставте посилання", s1: "Скопіюйте адресу сторінки кожного аромату на kremchik.ua або просто його ID.",
+    s2h: "Натисніть «Знайти продавця»", s2: "Програма відкриє сторінки ароматів і згрупує пропозиції за продавцями.",
+    s3h: "Оберіть продавця", s3: "Зверху список тих, у кого є всі аромати. Якщо таких немає, показано найкращі часткові варіанти.",
+    f1h: "Враховує об'єм", f1: "Задайте мінімум мл на кожен аромат, зайві пропозиції відсіються.",
+    f2h: "Ціни та тип пропозиції", f2: "Розпив або залишок у флаконі, ціна за одиницю та доступний об'єм.",
+    f3h: "Російська та українська", f3: "Мова інтерфейсу перемикається однією кнопкою.",
+    f4h: "Дбайливо до сайту", f4: "Пауза 1,5 секунди між запитами. Нічого не надсилається на сторонні сервери.",
+    faqh: "Часті запитання",
+    q1: "Windows пише про невідомого видавця", a1: "Це звичайна справа для програм, зібраних PyInstaller: у файлу немає платного підпису. Вихідний код відкритий, exe збирає GitHub Actions, ви можете зібрати його й самі.",
+    q2: "Це офіційний інструмент?", a2: "Ні. Це незалежний особистий проєкт, він не пов'язаний з kremchik.ua.",
+    q3: "Як запустити без exe?", a3: "Встановіть Python і виконайте в папці проєкту:",
+    ctah: "Годі платити за три доставки",
+    foot: "Неофіційний проєкт, не пов'язаний з kremchik.ua. Ліцензія"
+  }
+};
+
+function setLang(l) {
+  const t = T[l];
+  document.documentElement.lang = l;
+  document.title = t.title;
+  document.querySelector('meta[name=description]').content = t.desc;
+  document.getElementById('lang').textContent = t.btn;
+  document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t[el.dataset.i]; });
+  document.querySelectorAll('[data-alt]').forEach(el => { el.alt = t[el.dataset.alt]; });
+  try { localStorage.setItem('lang', l); } catch (e) {}
+}
+
+let lang = 'ru';
+try { lang = localStorage.getItem('lang') || ''; } catch (e) {}
+if (!T[lang]) lang = (navigator.language || '').toLowerCase().startsWith('uk') ? 'uk' : 'ru';
+document.getElementById('lang').addEventListener('click', () => { lang = lang === 'ru' ? 'uk' : 'ru'; setLang(lang); });
+setLang(lang);
+</script>
+</body>
+</html>
