@@ -2,7 +2,7 @@
 
 🇷🇺 [Русский](#русский) · 🇺🇦 [Українська](#українська)
 
-![screenshot](docs/screenshot.png)
+![screenshot](screenshot.png)
 
 ---
 
